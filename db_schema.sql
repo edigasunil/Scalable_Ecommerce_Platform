@@ -1,0 +1,47 @@
+CREATE DATABASE ecommerce;
+
+USE ecommerce;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  category VARCHAR(100),
+  price DECIMAL(10,2) NOT NULL,
+  stock INT DEFAULT 0,
+  image_url VARCHAR(255)
+);
+
+CREATE TABLE cart (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  product_id INT,
+  qty INT DEFAULT 1,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  total_amount DECIMAL(10,2) NOT NULL,
+  status ENUM('PENDING','COMPLETED','FAILED') DEFAULT 'PENDING',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT,
+  amount DECIMAL(10,2) NOT NULL,
+  method VARCHAR(50),
+  status ENUM('PENDING','SUCCESS','FAILED') DEFAULT 'PENDING',
+  FOREIGN KEY (order_id) REFERENCES orders(id)
+);
